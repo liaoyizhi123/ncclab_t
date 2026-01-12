@@ -126,35 +126,34 @@ def inference(PIL_images, query, question, device):
 
 
 if __name__ == '__main__':
-#     prompt = '''
-# You are an expert in affective computing and emotion understanding.
+    #     prompt = '''
+    # You are an expert in affective computing and emotion understanding.
 
-# Watch the video carefully and describe the emotions expressed in the scene.
+    # Watch the video carefully and describe the emotions expressed in the scene.
 
-# Focus on observable emotional cues, including but not limited to:
-# - facial expressions
-# - body language and posture
-# - movement and pacing
-# - scene atmosphere and tone
-# - lighting, color, and visual mood
-# - interactions between characters or with the environment
+    # Focus on observable emotional cues, including but not limited to:
+    # - facial expressions
+    # - body language and posture
+    # - movement and pacing
+    # - scene atmosphere and tone
+    # - lighting, color, and visual mood
+    # - interactions between characters or with the environment
 
-# Describe the emotional states in a natural, detailed, and open-ended manner.
-# Emotions may be mixed, subtle, evolving, or ambiguous.
+    # Describe the emotional states in a natural, detailed, and open-ended manner.
+    # Emotions may be mixed, subtle, evolving, or ambiguous.
 
-# Do NOT assign numerical scores.
-# Do NOT restrict yourself to predefined emotion categories.
+    # Do NOT assign numerical scores.
+    # Do NOT restrict yourself to predefined emotion categories.
 
-# Output a single coherent paragraph describing the emotions conveyed by the video.
-# '''
-#     import glob
-#     videos = sorted(glob.glob("data/CineBrain_8s/*.mp4"))
-#     out_path = "icml/data.jsonl"
-#     with open(out_path, "w", encoding="utf-8") as f:
-#         for v in videos:
-#             f.write(json.dumps({"video": os.path.abspath(v), "query": prompt},
-#             ensure_ascii=False) + "\n")
-
+    # Output a single coherent paragraph describing the emotions conveyed by the video.
+    # '''
+    #     import glob
+    #     videos = sorted(glob.glob("data/CineBrain_8s/*.mp4"))
+    #     out_path = "icml/data.jsonl"
+    #     with open(out_path, "w", encoding="utf-8") as f:
+    #         for v in videos:
+    #             f.write(json.dumps({"video": os.path.abspath(v), "query": prompt},
+    #             ensure_ascii=False) + "\n")
 
     arg_parser = argparse.ArgumentParser()
 
@@ -172,15 +171,16 @@ if __name__ == '__main__':
     dataset = load_dataset(args.dataset_path)
 
     pretrained = pretrained.format(version=args.version)
-    tokenizer, model, image_processor, max_length = load_pretrained_model(pretrained, None, model_name, device_map=device_map, attn_implementation=None)
+    tokenizer, model, image_processor, max_length = load_pretrained_model(
+        pretrained, None, model_name, device_map=device_map, attn_implementation=None
+    )
     model.eval()
     device_ = torch.device(device)
     model.to(device_)
 
-    args.output_file = os.path.join(args.output_dir, '{}-{}.json'.format(args.version, args.split))
+    args.output_file = os.path.join(args.output_dir, '{}-{}.jsonl'.format(args.version, args.split))
     print('LOADING DATASET...')
 
-    
     cur_id, chunk_nums = args.split.split('_')
     cur_id = int(cur_id)
     chunk_nums = int(chunk_nums)
